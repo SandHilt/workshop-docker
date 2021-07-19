@@ -1,8 +1,26 @@
-FROM node:16-slim
+FROM node:14.17.1-slim
 
+# Environment of npm log
+ENV NPM_CONFIG_LOGLEVEL error
+
+# Create user and add to user group
+RUN useradd --user-group --create-home --shell /bin/false app
+
+# Environment of home directory
+ENV HOME=/home/app
+
+# Create the app directory
+RUN mkdir -p ${HOME}/app
+
+# Copy dependencies
+COPY server/package*.json $HOME/app/
+
+# Permission fix for the app folder
+RUN chown -R app:app $HOME/*
+
+USER root
 WORKDIR /home/app
-COPY server/package.json ./
-
+RUN npm i -g @nestjs/cli
 RUN npm install
 
-RUN npm run build
+CMD ["npm", "run", "start:debug"]

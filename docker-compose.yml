@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  db:
+    restart: on-failure
+    image: postgres:13-buster
+    ports:
+      - "5432:5432"
+  adminer:
+    image: adminer/adminer
+    restart: on-failure
+    depends_on:
+      - db
+  api:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    depends_on:
+      - db
+  web:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - db
+      - api

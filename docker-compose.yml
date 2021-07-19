@@ -6,6 +6,12 @@ services:
     image: postgres:13-buster
     ports:
       - "5432:5432"
+    volumes:
+      - storage_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
   adminer:
     image: adminer
     restart: on-failure
@@ -18,12 +24,16 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
+    volumes:
+      - ./server:/home/app/server
     depends_on:
       - db
     ports:
       - "8000:3000"
   web:
     restart: on-failure
+    volumes:
+      - ./client:/home/app/client
     build:
       context: ./client
       dockerfile: Dockerfile
@@ -32,3 +42,7 @@ services:
       - api
     ports:
       - "8100:3000"
+volumes:
+  storage_api:
+  storage_web:
+  storage_db:

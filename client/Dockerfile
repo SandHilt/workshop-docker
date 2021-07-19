@@ -1,4 +1,4 @@
-FROM node:16.5.0-slim
+FROM node:16-slim
 
 # Environment of npm log
 ENV NPM_CONFIG_LOGLEVEL error
@@ -10,16 +10,16 @@ RUN useradd --user-group --create-home --shell /bin/false app
 ENV HOME=/home/app
 
 # Create the app directory
-RUN mkdir -p ${HOME}/app
+RUN mkdir -p ${HOME}/client
 
 # Copy dependencies
-COPY client/package*.json $HOME/app/
+COPY package*.json $HOME/client/
 
 # Permission fix for the app folder
 RUN chown -R app:app $HOME/*
 
 USER root
-WORKDIR /home/app
+WORKDIR ${HOME}/client
 RUN npm install
 
 CMD [ "npm", "run", "start" ]

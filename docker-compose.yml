@@ -7,7 +7,7 @@ services:
     ports:
       - "5432:5432"
   adminer:
-    image: adminer/adminer
+    image: adminer
     restart: on-failure
     depends_on:
       - db
@@ -16,19 +16,19 @@ services:
   api:
     restart: on-failure
     build:
-      context: .
-      dockerfile: Dockerfile.server
+      context: ./server
+      dockerfile: Dockerfile
     depends_on:
       - db
     ports:
-      - "3000:8000"
+      - "8000:3000"
   web:
     restart: on-failure
     build:
-      context: .
-      dockerfile: Dockerfile.client
+      context: ./client
+      dockerfile: Dockerfile
     depends_on:
       - db
       - api
     ports:
-      - "3000:8100"
+      - "8100:3000"
